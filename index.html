@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>서버시간</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        flex-direction: column; /* 세로로 배치 */
+        justify-content: center;
+        align-items: center;
+        height: 90vh;
+        margin: 0x;
+        background-color: #f0f0f0;
+      }
+      #time {
+        font-size: 2.4rem;
+        font-weight: bold;
+        color: #333;
+        text-align: left;
+        white-space: nowrap; /* 줄 바꿈 방지 */
+        min-width: 300px; /* 최소 너비 설정 */
+      }
+      #checkboxContainer {
+        margin: 20px;
+        font-size: 18px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="time"></div>
+
+    <div id="checkboxContainer">
+      <label>
+        <input type="checkbox" id="disableColorChange" /> 빨간색 배경색 비활성화
+      </label>
+    </div>
+
+    <script>
+      function updateTime() {
+        const now = new Date();
+
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, "0");
+        const day = String(now.getDate()).padStart(2, "0");
+        const hours = String(now.getHours()).padStart(2, "0");
+        const minutes = String(now.getMinutes()).padStart(2, "0");
+        const seconds = now.getSeconds();
+        const milliseconds = String(now.getMilliseconds()).padStart(3, "0");
+
+        const formattedTime = `${year}년 ${month}월 ${day}일<br>${hours}시 ${minutes}분 ${seconds}초 ${milliseconds}`;
+        document.getElementById("time").innerHTML = formattedTime;
+
+        // 체크박스 상태 확인
+        const isChecked = document.getElementById("disableColorChange").checked;
+
+        // 체크박스가 체크되지 않은 경우에만 배경색을 변경
+        if (!isChecked) {
+          if (seconds < 55) {
+            // 0초부터 54초까지는 흰색
+            document.body.style.backgroundColor = "rgb(255, 255, 255)";
+          } else {
+            // 55초부터 0초까지 G, B 값 서서히 줄여서 빨간색으로 변화
+            const greenBlueIntensity = Math.floor(51 * (60 - seconds)); // G와 B 값 계산
+            document.body.style.backgroundColor = `rgb(255, ${greenBlueIntensity}, ${greenBlueIntensity})`;
+          }
+        } else {
+          // 체크박스가 체크된 경우에는 배경색을 변경하지 않음
+          document.body.style.backgroundColor = "rgb(255, 255, 255)";
+        }
+      }
+
+      // 10ms마다 시간 갱신
+      setInterval(updateTime, 10);
+      updateTime(); // 페이지 로드 시 초기 시간 설정
+    </script>
+  </body>
+</html>
